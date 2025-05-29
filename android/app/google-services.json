@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1064923598481",
+    "project_id": "gestin-882eb",
+    "storage_bucket": "gestin-882eb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064923598481:android:a2c950dfb8d833955af930",
+        "android_client_info": {
+          "package_name": "GestIN.a"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064923598481-0v9smg3gmkjdk8ra6d3jv6uvbgktu50j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvinxDW8aVA1UK1Pnfzo_MxZdQr_9wT8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064923598481-0v9smg3gmkjdk8ra6d3jv6uvbgktu50j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

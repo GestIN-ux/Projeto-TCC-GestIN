@@ -39,5 +39,5 @@
 
 ```bash
 # Clone o repositório
-git clone https://github.com/Projeto-TCC-GestIN
+git clone https://github.com/GestIN-ux/Projeto-TCC-GestIN
 

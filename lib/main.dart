@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'firebase_options.dart';
 import 'pages/home_page.dart';
 import 'pages/operacoes_page.dart';
 import 'pages/clientes_page.dart';
 import 'pages/tela_login.dart';
 import 'pages/tela_cadastro.dart'; 
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(const GestinApp());
 }
 
@@ -27,7 +29,8 @@ class GestinApp extends StatelessWidget {
         '/home': (_) =>  HomePage(),
         '/operacoes': (_) =>  OperacoesPage(),
         '/clientes': (_) =>  ClientesPage(),
-        '/cadastro': (_) => const TelaCadastro(), // 👈 Rota adicionada
+        '/cadastro': (_) => const TelaCadastro(), 
+        '/login': (_) => TelaLogin(),
       },
     );
   }

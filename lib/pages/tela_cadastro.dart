@@ -47,8 +47,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
         email: email,
         password: senha,
       );
-      // Cadastro realizado, redireciona para a home ou login
-      Navigator.pushReplacementNamed(context, '/home');
+      Navigator.pushReplacementNamed(context, '/login');
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -137,7 +136,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context); // Voltar para tela de login
+                    Navigator.pop(context); 
                   },
                   child: const Text('Já possui conta? Faça login'),
                 ),

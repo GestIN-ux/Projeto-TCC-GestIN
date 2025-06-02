@@ -29,6 +29,49 @@
             {
               "client_id": "1064923598481-0v9smg3gmkjdk8ra6d3jv6uvbgktu50j.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1064923598481-m6d8cic3ech2ol025ha6q2t4j45mugds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gestin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064923598481:android:20aa6e77790c191a5af930",
+        "android_client_info": {
+          "package_name": "com.example.gestin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064923598481-0v9smg3gmkjdk8ra6d3jv6uvbgktu50j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvinxDW8aVA1UK1Pnfzo_MxZdQr_9wT8I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064923598481-0v9smg3gmkjdk8ra6d3jv6uvbgktu50j.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1064923598481-m6d8cic3ech2ol025ha6q2t4j45mugds.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.gestin"
+              }
             }
           ]
         }

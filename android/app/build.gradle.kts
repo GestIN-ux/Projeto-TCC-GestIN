@@ -22,10 +22,11 @@ android {
 
     defaultConfig {
         applicationId = "com.example.gestin"
-        minSdk = flutter.minSdkVersion
+        minSdk = 19
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        multiDexEnable true
     }
 
     buildTypes {

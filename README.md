@@ -1,16 +1,43 @@
-# gestin
+# 💼 GestIN – Gestor Financeiro para Microempreendedores
 
-A new Flutter project.
+![GestIN Logo](LOGO_TCC.png) <!-- Altere o caminho se a imagem estiver em outro diretório -->
 
-## Getting Started
+**GestIN** é um aplicativo mobile desenvolvido com **Flutter**, criado para auxiliar microempreendedores no controle financeiro do seu negócio. Com recursos como registro de receitas, despesas, metas e relatórios visuais, o app oferece uma solução prática e acessível para a gestão do dia a dia.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Tecnologias Utilizadas
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter** – Desenvolvimento multiplataforma (Android e iOS)
+- **Firebase** – Autenticação de usuários, Cloud Firestore, notificações e serviços em nuvem
+- **MySQL** – Armazenamento de dados financeiros e históricos via API
+- **Canva** – Design da logo e identidade visual
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 📲 Funcionalidades
+
+- ✅ Cadastro e login de usuários com autenticação Firebase
+- 💰 Registro de receitas e despesas com categorias personalizadas
+- 📊 Visualização de relatórios e gráficos financeiros
+- 🎯 Definição de metas mensais e acompanhamento
+- ☁️ Backup e sincronização de dados com a nuvem
+
+---
+
+## 🛠️ Como Executar Localmente
+
+### Pré-requisitos
+
+- Flutter SDK instalado
+- Editor (VS Code ou Android Studio)
+- Conta no Firebase configurada
+- MySQL Server (local ou remoto)
+- Dart >= 3.0
+
+### Para clonar repositório
+
+```bash
+# Clone o repositório
+git clone https://github.com/Projeto-TCC-GestIN
+

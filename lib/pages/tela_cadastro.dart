@@ -9,34 +9,40 @@ class TelaCadastro extends StatefulWidget {
 }
 
 class _TelaCadastroState extends State<TelaCadastro> {
+  final TextEditingController _nomeCompletoController = TextEditingController();
+  final TextEditingController _nomeNegocioController = TextEditingController();
+  final TextEditingController _cpfCnpjController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _telefoneController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
-  final TextEditingController _confirmSenhaController = TextEditingController();
+  final TextEditingController _areaAtuacaoController = TextEditingController();
   bool _isLoading = false;
 
   @override
   void dispose() {
+    _nomeCompletoController.dispose();
+    _nomeNegocioController.dispose();
+    _cpfCnpjController.dispose();
     _emailController.dispose();
+    _telefoneController.dispose();
     _senhaController.dispose();
-    _confirmSenhaController.dispose();
+    _areaAtuacaoController.dispose();
     super.dispose();
   }
 
   Future<void> _cadastrar() async {
     final email = _emailController.text.trim();
     final senha = _senhaController.text.trim();
-    final confirmSenha = _confirmSenhaController.text.trim();
 
-    if (email.isEmpty || senha.isEmpty || confirmSenha.isEmpty) {
+    if (_nomeCompletoController.text.isEmpty ||
+        _nomeNegocioController.text.isEmpty ||
+        _cpfCnpjController.text.isEmpty ||
+        _telefoneController.text.isEmpty ||
+        _areaAtuacaoController.text.isEmpty ||
+        email.isEmpty ||
+        senha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Preencha todos os campos.')),
-      );
-      return;
-    }
-
-    if (senha != confirmSenha) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('As senhas não coincidem.')),
       );
       return;
     }
@@ -76,7 +82,7 @@ class _TelaCadastroState extends State<TelaCadastro> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _cadastrar,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF004D40),
+          backgroundColor: const Color(0xFF3B7A1D),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: _isLoading
@@ -90,12 +96,30 @@ class _TelaCadastroState extends State<TelaCadastro> {
     );
   }
 
+  Widget _buildCampo(String label, TextEditingController controller,
+      {bool isPassword = false, TextInputType keyboardType = TextInputType.text}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: TextField(
+        controller: controller,
+        obscureText: isPassword,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.black),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F1E7),
       appBar: AppBar(
         title: const Text('Cadastro'),
-        backgroundColor: const Color(0xFF004D40),
+        backgroundColor: const Color(0xFF3B7A1D),
       ),
       body: SafeArea(
         child: Center(
@@ -103,42 +127,28 @@ class _TelaCadastroState extends State<TelaCadastro> {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
               children: [
-                Image.asset('assets/logo.png', height: 250),
-                const SizedBox(height: 32),
-                TextField(
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _senhaController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Senha',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _confirmSenhaController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Confirmar senha',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
+                Image.asset('assets/logo.png', height: 180),
+                const SizedBox(height: 24),
+                _buildCampo('Nome completo', _nomeCompletoController),
+                _buildCampo('Nome do negócio', _nomeNegocioController),
+                _buildCampo('CPF e/ou CNPJ', _cpfCnpjController, keyboardType: TextInputType.number),
+                _buildCampo('E-mail', _emailController, keyboardType: TextInputType.emailAddress),
+                _buildCampo('Telefone', _telefoneController, keyboardType: TextInputType.phone),
+                _buildCampo('Senha', _senhaController, isPassword: true),
+                _buildCampo('Área de atuação', _areaAtuacaoController),
                 const SizedBox(height: 24),
                 _buildCadastrarButton(),
                 const SizedBox(height: 16),
                 TextButton(
-                  onPressed: () {
-                    Navigator.pop(context); 
-                  },
-                  child: const Text('Já possui conta? Faça login'),
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text(
+                    'Já possui conta? Faça login',
+                    style: TextStyle(
+                      color: Color(0xFFC6281C),
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ],
             ),

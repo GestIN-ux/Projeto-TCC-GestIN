@@ -59,7 +59,6 @@ class _TelaLoginState extends State<TelaLogin> {
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
-      // Caso ocorra outro tipo de erro
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro inesperado: $e')),
       );
@@ -75,7 +74,7 @@ class _TelaLoginState extends State<TelaLogin> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF004D40),
+          backgroundColor: const Color(0xFF3B7A1D), 
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: _isLoading
@@ -92,7 +91,7 @@ class _TelaLoginState extends State<TelaLogin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color(0xFFF3F1E7), 
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -107,7 +106,11 @@ class _TelaLoginState extends State<TelaLogin> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Bem Vindo',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black, 
+                    ),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -132,23 +135,6 @@ class _TelaLoginState extends State<TelaLogin> {
                 ),
                 const SizedBox(height: 20),
                 _buildLoginButton(),
-                const SizedBox(height: 16),
-                const Text('ou'),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: OutlinedButton.icon(
-                    icon: Image.asset('assets/googleicon.png', height: 24),
-                    label: const Text('Continue com Google'),
-                    onPressed: () {
-                      // TODO: Implementar login com Google
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                  ),
-                ),
                 const SizedBox(height: 24),
                 const Text.rich(
                   TextSpan(
@@ -156,12 +142,12 @@ class _TelaLoginState extends State<TelaLogin> {
                     children: [
                       TextSpan(
                         text: 'Termos de Serviço',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                       ),
-                      TextSpan(text: ' e '),
+                      TextSpan(text: ' e ', style: TextStyle(color: Colors.black)),
                       TextSpan(
                         text: 'Política de Privacidade.',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                       ),
                     ],
                   ),
@@ -176,7 +162,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   child: const Text(
                     'Não tem conta? Cadastre-se',
                     style: TextStyle(
-                      color: Colors.blue,
+                      color: Color(0xFFC6281C), 
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
                     ),

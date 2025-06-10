@@ -1,28 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart'; // Ícones modernos
+import 'package:lucide_icons/lucide_icons.dart';
 
 class OperacoesPage extends StatefulWidget {
+  final String userId;
+
+  OperacoesPage({required this.userId});
+
   @override
   State<OperacoesPage> createState() => _OperacoesPageState();
 }
 
 class _OperacoesPageState extends State<OperacoesPage> {
+  static final Map<String, List<Map<String, String>>> _operacoesPorUsuario = {};
+
   final clienteIdController = TextEditingController();
   final valorController = TextEditingController();
   final descricaoController = TextEditingController();
 
   void registrarVenda() {
-    final clienteId = clienteIdController.text;
-    final valor = valorController.text;
-    final descricao = descricaoController.text;
+    final clienteId = clienteIdController.text.trim();
+    final valor = valorController.text.trim();
+    final descricao = descricaoController.text.trim();
 
-    print('Venda: Cliente $clienteId, Valor $valor, Desc: $descricao');
+    if (clienteId.isEmpty || valor.isEmpty || descricao.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Preencha todos os campos')),
+      );
+      return;
+    }
+
+    _operacoesPorUsuario.putIfAbsent(widget.userId, () => []);
+    _operacoesPorUsuario[widget.userId]!.add({
+      'clienteId': clienteId,
+      'valor': valor,
+      'descricao': descricao,
+    });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Venda registrada (simulado)')),
+      SnackBar(content: Text('Venda registrada')),
     );
 
-    // Limpar campos após registrar
     clienteIdController.clear();
     valorController.clear();
     descricaoController.clear();
@@ -45,8 +62,6 @@ class _OperacoesPageState extends State<OperacoesPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
-
-            // Campo ID do Cliente
             TextField(
               controller: clienteIdController,
               decoration: InputDecoration(
@@ -58,8 +73,6 @@ class _OperacoesPageState extends State<OperacoesPage> {
               ),
             ),
             SizedBox(height: 16),
-
-            // Campo Valor
             TextField(
               controller: valorController,
               decoration: InputDecoration(
@@ -72,8 +85,6 @@ class _OperacoesPageState extends State<OperacoesPage> {
               keyboardType: TextInputType.number,
             ),
             SizedBox(height: 16),
-
-            // Campo Descrição
             TextField(
               controller: descricaoController,
               decoration: InputDecoration(
@@ -85,8 +96,6 @@ class _OperacoesPageState extends State<OperacoesPage> {
               ),
             ),
             SizedBox(height: 30),
-
-            // Botão Registrar
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(

@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart'; // Ícones modernos
+import 'package:lucide_icons/lucide_icons.dart';
 
 class ClientesPage extends StatefulWidget {
+  final String userId;
+
+  ClientesPage({required this.userId});
+
   @override
   State<ClientesPage> createState() => _ClientesPageState();
 }
 
 class _ClientesPageState extends State<ClientesPage> {
-  List<Map<String, String>> clientes = [
-    {'nome': 'Maria Silva', 'email': 'maria@email.com'},
-    {'nome': 'João Souza', 'email': 'joao@email.com'}
-  ];
+  static final Map<String, List<Map<String, String>>> _clientesPorUsuario = {};
 
   final nomeController = TextEditingController();
   final emailController = TextEditingController();
+
+  List<Map<String, String>> get clientes =>
+      _clientesPorUsuario[widget.userId] ?? [];
 
   void cadastrarCliente() {
     final nome = nomeController.text.trim();
@@ -27,7 +31,8 @@ class _ClientesPageState extends State<ClientesPage> {
     }
 
     setState(() {
-      clientes.add({'nome': nome, 'email': email});
+      _clientesPorUsuario.putIfAbsent(widget.userId, () => []);
+      _clientesPorUsuario[widget.userId]!.add({'nome': nome, 'email': email});
     });
 
     nomeController.clear();
@@ -55,8 +60,6 @@ class _ClientesPageState extends State<ClientesPage> {
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-
-            // Lista de Clientes
             Expanded(
               child: clientes.isEmpty
                   ? Center(child: Text('Nenhum cliente cadastrado.'))
@@ -79,16 +82,12 @@ class _ClientesPageState extends State<ClientesPage> {
                       },
                     ),
             ),
-
             Divider(height: 30),
-
             Text(
               'Novo Cliente',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
             SizedBox(height: 10),
-
-            // Campo Nome
             TextField(
               controller: nomeController,
               decoration: InputDecoration(
@@ -100,8 +99,6 @@ class _ClientesPageState extends State<ClientesPage> {
               ),
             ),
             SizedBox(height: 10),
-
-            // Campo Email
             TextField(
               controller: emailController,
               decoration: InputDecoration(
@@ -114,8 +111,6 @@ class _ClientesPageState extends State<ClientesPage> {
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 20),
-
-            // Botão Cadastrar
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(

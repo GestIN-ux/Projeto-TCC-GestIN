@@ -1,44 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TelaLogin extends StatefulWidget {
   const TelaLogin({Key? key}) : super(key: key);
-
   @override
   State<TelaLogin> createState() => _TelaLoginState();
 }
-
 class _TelaLoginState extends State<TelaLogin> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _senhaController = TextEditingController();
   bool _isLoading = false;
-
   @override
   void dispose() {
     _emailController.dispose();
     _senhaController.dispose();
     super.dispose();
   }
-
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final senha = _senhaController.text.trim();
-
     if (email.isEmpty || senha.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Preencha email e senha para continuar.')),
       );
       return;
     }
-
     setState(() => _isLoading = true);
-
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: senha,
       );
-      Navigator.pushReplacementNamed(context, '/home');
+      final uid = cred.user!.uid;
+      final doc = await FirebaseFirestore.instance.collection('usuarios').doc(uid).get();
+      if (doc.exists) {
+        final dados = doc.data()!;
+        Navigator.pushReplacementNamed(context, '/home', arguments: dados);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Dados do usuário não encontrados.')),
+        );
+      }
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -66,7 +69,6 @@ class _TelaLoginState extends State<TelaLogin> {
       setState(() => _isLoading = false);
     }
   }
-
   Widget _buildLoginButton() {
     return SizedBox(
       width: double.infinity,
@@ -74,7 +76,7 @@ class _TelaLoginState extends State<TelaLogin> {
       child: ElevatedButton(
         onPressed: _isLoading ? null : _login,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF3B7A1D), 
+          backgroundColor: const Color(0xFF3B7A1D),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
         child: _isLoading
@@ -87,11 +89,10 @@ class _TelaLoginState extends State<TelaLogin> {
       ),
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F1E7), 
+      backgroundColor: const Color(0xFFF3F1E7),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -109,7 +110,7 @@ class _TelaLoginState extends State<TelaLogin> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black, 
+                      color: Colors.black,
                     ),
                   ),
                 ),
@@ -162,7 +163,7 @@ class _TelaLoginState extends State<TelaLogin> {
                   child: const Text(
                     'Não tem conta? Cadastre-se',
                     style: TextStyle(
-                      color: Color(0xFFC6281C), 
+                      color: Color(0xFFC6281C),
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
                     ),

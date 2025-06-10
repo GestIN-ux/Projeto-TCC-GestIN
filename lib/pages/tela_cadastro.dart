@@ -87,18 +87,18 @@ class _TelaCadastroState extends State<TelaCadastro> {
   Future<void> _cadastrar() async {
     final nome = _nomeCompletoController.text.trim();
     final negocio = _nomeNegocioController.text.trim();
-    final cnpj = _cpfCnpjController.text.trim();
+    final cpfCnpj = _cpfCnpjController.text.trim();
     final email = _emailController.text.trim();
     final telefone = _telefoneController.text.trim();
     final senha = _senhaController.text.trim();
     final area = _areaAtuacaoController.text.trim();
 
-    if ([nome, negocio, cnpj, email, telefone, senha, area].any((v) => v.isEmpty)) {
+    if ([nome, negocio, cpfCnpj, email, telefone, senha, area].any((v) => v.isEmpty)) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Preencha todos os campos.')));
       return;
     }
 
-    if (!_isCpfCnpjValid(cnpj)) {
+    if (!_isCpfCnpjValid(cpfCnpj)) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('CPF ou CNPJ inválido.')));
       return;
     }
@@ -114,12 +114,16 @@ class _TelaCadastroState extends State<TelaCadastro> {
     }
 
     setState(() => _isLoading = true);
+
     try {
       UserCredential cred = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: senha);
-      await FirebaseFirestore.instance.collection('usuarios').doc(cred.user!.uid).set({
+      final uid = cred.user!.uid;
+
+      await FirebaseFirestore.instance.collection('usuarios').doc(uid).set({
+        'userId': uid, // salva explicitamente o userId
         'nomeCompleto': nome,
         'nomeNegocio': negocio,
-        'cpfCnpj': cnpj,
+        'cpfCnpj': cpfCnpj,
         'email': email,
         'telefone': telefone,
         'areaAtuacao': area,

@@ -1,121 +1,252 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'relatorios_page.dart';
 
 class OperacoesPage extends StatefulWidget {
   final String userId;
 
-  OperacoesPage({required this.userId});
+  const OperacoesPage({required this.userId, Key? key}) : super(key: key);
 
   @override
   State<OperacoesPage> createState() => _OperacoesPageState();
 }
 
 class _OperacoesPageState extends State<OperacoesPage> {
-  static final Map<String, List<Map<String, String>>> _operacoesPorUsuario = {};
+  final TextEditingController nomeClienteController = TextEditingController();
+  final TextEditingController valorController = TextEditingController();
+  final TextEditingController descricaoController = TextEditingController();
 
-  final clienteIdController = TextEditingController();
-  final valorController = TextEditingController();
-  final descricaoController = TextEditingController();
+  String formaPagamento = 'Dinheiro';
+  String tipoOperacao = 'Entrada';
 
-  void registrarVenda() {
-    final clienteId = clienteIdController.text.trim();
-    final valor = valorController.text.trim();
+  final Color verde = Colors.green.shade600;
+  final Color vermelho = Colors.red.shade600;
+  final Color dourado = const Color(0xFFFFD700);
+  final Color fundo = Colors.black;
+  final Color textoBranco = Colors.white;
+
+  Future<void> registrarVenda() async {
+    final nomeCliente = nomeClienteController.text.trim();
+    final valorTexto = valorController.text.trim();
     final descricao = descricaoController.text.trim();
 
-    if (clienteId.isEmpty || valor.isEmpty || descricao.isEmpty) {
+    if (nomeCliente.isEmpty || valorTexto.isEmpty || descricao.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Preencha todos os campos')),
+        const SnackBar(content: Text('Preencha todos os campos')),
       );
       return;
     }
 
-    _operacoesPorUsuario.putIfAbsent(widget.userId, () => []);
-    _operacoesPorUsuario[widget.userId]!.add({
-      'clienteId': clienteId,
-      'valor': valor,
-      'descricao': descricao,
-    });
+    final valor = double.tryParse(valorTexto);
+    if (valor == null || valor <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Informe um valor válido')),
+      );
+      return;
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Venda registrada')),
-    );
+    try {
+      await FirebaseFirestore.instance.collection('operacoes').add({
+        'userId': widget.userId,
+        'nomeCliente': nomeCliente,
+        'valor': valor,
+        'descricao': descricao,
+        'formaPagamento': formaPagamento,
+        'tipoOperacao': tipoOperacao,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
 
-    clienteIdController.clear();
-    valorController.clear();
-    descricaoController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Operação "$tipoOperacao" registrada com sucesso')),
+      );
+
+      nomeClienteController.clear();
+      valorController.clear();
+      descricaoController.clear();
+      setState(() {
+        formaPagamento = 'Dinheiro';
+        tipoOperacao = 'Entrada';
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao registrar operação: $e')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: fundo,
       appBar: AppBar(
-        title: Text('Registrar Operação'),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: fundo,
+        title: Text('Registrar Operação', style: TextStyle(color: textoBranco)),
+        iconTheme: IconThemeData(color: textoBranco),
+        actions: [
+          IconButton(
+            tooltip: 'Ver Relatório',
+            icon: Icon(Icons.bar_chart, color: textoBranco),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => RelatorioPage(userId: widget.userId),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Nova Venda',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: clienteIdController,
-              decoration: InputDecoration(
-                labelText: 'ID do Cliente',
-                prefixIcon: Icon(LucideIcons.user),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+        padding: const EdgeInsets.all(20),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Nova Operação',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: textoBranco,
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: valorController,
-              decoration: InputDecoration(
-                labelText: 'Valor (R\$)',
-                prefixIcon: Icon(LucideIcons.dollarSign),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: descricaoController,
-              decoration: InputDecoration(
-                labelText: 'Descrição',
-                prefixIcon: Icon(LucideIcons.fileText),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            SizedBox(height: 30),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: registrarVenda,
-                icon: Icon(LucideIcons.checkCircle),
-                label: Text(
-                  'Registrar Venda',
-                  style: TextStyle(fontSize: 16),
-                ),
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
+              const SizedBox(height: 20),
+              TextField(
+                controller: nomeClienteController,
+                style: TextStyle(color: textoBranco),
+                decoration: InputDecoration(
+                  labelText: 'Nome do Cliente',
+                  labelStyle: TextStyle(color: textoBranco),
+                  prefixIcon: Icon(Icons.person, color: textoBranco),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textoBranco),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: dourado),
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              TextField(
+                controller: valorController,
+                style: TextStyle(color: textoBranco),
+                decoration: InputDecoration(
+                  labelText: 'Valor (R\$)',
+                  labelStyle: TextStyle(color: textoBranco),
+                  prefixIcon: Icon(Icons.attach_money, color: textoBranco),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textoBranco),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: dourado),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: descricaoController,
+                style: TextStyle(color: textoBranco),
+                decoration: InputDecoration(
+                  labelText: 'Descrição',
+                  labelStyle: TextStyle(color: textoBranco),
+                  prefixIcon: Icon(Icons.description, color: textoBranco),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textoBranco),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: dourado),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: formaPagamento,
+                dropdownColor: fundo,
+                decoration: InputDecoration(
+                  labelText: 'Forma de Pagamento',
+                  labelStyle: TextStyle(color: textoBranco),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textoBranco),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                style: TextStyle(color: textoBranco),
+                items: ['Dinheiro', 'Pix', 'Cartão de Débito', 'Cartão de Crédito']
+                    .map((e) => DropdownMenuItem<String>(
+                          value: e,
+                          child: Text(e, style: TextStyle(color: textoBranco)),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      formaPagamento = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: tipoOperacao,
+                dropdownColor: fundo,
+                decoration: InputDecoration(
+                  labelText: 'Tipo de Operação',
+                  labelStyle: TextStyle(color: textoBranco),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: textoBranco),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                style: TextStyle(color: textoBranco),
+                items: ['Entrada', 'Saída']
+                    .map((e) => DropdownMenuItem<String>(
+                          value: e,
+                          child: Text(
+                            e,
+                            style: TextStyle(
+                              color: e == 'Entrada' ? verde : vermelho,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      tipoOperacao = value;
+                    });
+                  }
+                },
+              ),
+              const SizedBox(height: 30),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: registrarVenda,
+                  icon: Icon(Icons.check_circle, color: textoBranco),
+                  label: Text(
+                    'Registrar $tipoOperacao',
+                    style: TextStyle(color: textoBranco),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: tipoOperacao == 'Entrada' ? verde : vermelho,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

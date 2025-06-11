@@ -22,8 +22,8 @@ class _OperacoesPageState extends State<OperacoesPage> {
   final Color verde = Colors.green.shade600;
   final Color vermelho = Colors.red.shade600;
   final Color dourado = const Color(0xFFFFD700);
-  final Color fundo = Colors.black;
-  final Color textoBranco = Colors.white;
+  final Color fundo = Color(0xFFF3F1E7);
+  final Color textoBranco = const Color.fromARGB(255, 0, 0, 0);
 
   Future<void> registrarVenda() async {
     final nomeCliente = nomeClienteController.text.trim();

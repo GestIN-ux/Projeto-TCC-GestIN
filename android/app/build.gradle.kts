@@ -1,9 +1,8 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("com.google.gms.google-services") // <- Adicione esta linha aqui
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services") // Plugin do Firebase
+    id("dev.flutter.flutter-gradle-plugin") // Flutter deve vir por último
 }
 
 android {
@@ -26,7 +25,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        multiDexEnable true
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -38,4 +37,8 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation("androidx.multidex:multidex:2.0.1")
 }
